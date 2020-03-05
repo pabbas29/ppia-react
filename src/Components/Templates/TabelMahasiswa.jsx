@@ -11,6 +11,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import LastPageIcon from '@material-ui/icons/LastPage'
+import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
 
 const useStyles1 = makeStyles(theme => ({
     root: {
@@ -69,6 +70,13 @@ function TabelMahasiswa(props) {
         </div>
     )
 }
+
+TablePaginationActions.proptypes = {
+    count: PropTypes.number.isRequired,
+    onChangePage: PropTypes.func.isRequired,
+    page: PropTypes.number.isRequired,
+    rowsPerPage: PropsTypes.number.isRequired,
+};
         
 
 export default TabelMahasiswa;
