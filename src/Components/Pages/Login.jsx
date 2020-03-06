@@ -1,11 +1,11 @@
 import React from 'react';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import { Grid, Box } from '@material-ui/core';
-import { spacing } from '@material-ui/system'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -60,9 +60,11 @@ export default function LoginCard() {
                                 <Button style={{marginRight:"10px"}} variant="contained" color="primary">
                                     Login
                                 </Button>
-                                <Button variant="contained" color="secondary">
-                                    Cancel
-                                </Button>
+                                <Link to="/userreg">
+                                    <Button variant="contained">
+                                        Daftar
+                                    </Button>
+                                </Link>
                             </Box>         
                         </CardActions>
                     </form>
