@@ -10,6 +10,7 @@ import { spacing } from '@material-ui/system'
 const useStyles = makeStyles(theme => ({
     root: {
         minWidth: 275,
+        backgroundColor: "white",
     },
     pos: {
         marginBottom: 12,

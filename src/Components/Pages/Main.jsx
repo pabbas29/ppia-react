@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import LoginCard from './Login';
+import UserReg from './UserReg'
 
 
 class MainPage extends Component {
@@ -13,9 +14,17 @@ class MainPage extends Component {
     }
 
     render() {
-        return(
-            <LoginCard />
-        )
+        const isLoggedIn = this.state.isLoggedIn
+
+        if (isLoggedIn) {
+            return(
+                <UserReg />
+            )
+        } else {
+            return(
+                <LoginCard />
+            )
+        }   
     }
 }
 

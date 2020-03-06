@@ -25,7 +25,7 @@ function ButtonAppBar () {
 
     return(
         <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar style={{backgroundColor:"purple"}} position="static">
                 <Toolbar>
                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                         <MenuIcon />
