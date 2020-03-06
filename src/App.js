@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import Header from './Components/Header/Header';
 import ButtonAppBar from './Components/Navigation/AppBar';
-import TabelMahasiswa from './Components/Templates/TabelMahasiswa';
+import MainPage from './Components/Pages/Main';
+
 
 class App extends Component {
   render() {
@@ -10,7 +11,7 @@ class App extends Component {
       <div>
         <Header />
         <ButtonAppBar />
-        <TabelMahasiswa />
+        <MainPage />
       </div>
     )
   }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -71,11 +72,11 @@ function TabelMahasiswa(props) {
     )
 }
 
-TablePaginationActions.proptypes = {
+TablePaginationActions.propTypes = {
     count: PropTypes.number.isRequired,
     onChangePage: PropTypes.func.isRequired,
     page: PropTypes.number.isRequired,
-    rowsPerPage: PropsTypes.number.isRequired,
+    rowsPerPage: PropTypes.number.isRequired,
 };
         
 
