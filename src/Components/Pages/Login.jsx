@@ -11,6 +11,7 @@ const useStyles = makeStyles(theme => ({
     root: {
         minWidth: 275,
         backgroundColor: "white",
+        height: 180,
     },
     pos: {
         marginBottom: 12,
@@ -35,7 +36,7 @@ export default function LoginCard() {
             style={{ minHeight: '50vh'}}
         >
             <Grid>
-                <Card className={classes.root}>
+                <Card className={classes.root} elevation={2}>
                     <form className={classes.root} noValidate autoComplete="off">
                         <CardActions>    
                                 <Box mx="auto">

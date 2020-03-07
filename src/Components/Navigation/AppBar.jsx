@@ -34,7 +34,7 @@ function ButtonAppBar () {
                     </IconButton>
                     <Typography variant="h6" className={classes.title}></Typography>
                     <Link to="/login">
-                        <Button color="inherit">Login</Button>
+                        <Button color="primary" style={{color:"white"}}>Login</Button>
                     </Link>
                 </Toolbar>
             </AppBar>

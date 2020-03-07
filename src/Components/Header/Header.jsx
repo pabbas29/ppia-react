@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 
 class Header extends Component {
     render() {
@@ -6,7 +7,9 @@ class Header extends Component {
             <header>
                 <div className='header'>
                     <div className="logo">
-                        <img src="http://ppia.feb.ui.ac.id/wp-content/uploads/2015/09/logoppia.png" alt="PPIA" />
+                        <Link to="/">
+                            <img src="http://ppia.feb.ui.ac.id/wp-content/uploads/2015/09/logoppia.png" alt="PPIA" />
+                        </Link>
                     </div>    
                 </div>
                 

@@ -43,7 +43,7 @@ function UserReg() {
             alignContent="center"
             alignItems="center"
         >
-            <Card className={classes.root}>
+            <Card style={{marginTop:"20px"}} elevation={2} className={classes.root}>
                 <Box mx="auto">
                     <CardHeader title="Form Pendaftaran User Baru" />
                     <form>
@@ -73,13 +73,11 @@ function UserReg() {
                                 <Button style={{marginRight:"10px"}} variant="contained" color="primary">
                                     Daftar
                                 </Button>
-                                <Router>
-                                    <Link to="/">
-                                        <Button variant="contained" color="secondary">
-                                            Batal
-                                        </Button>
-                                    </Link>
-                                </Router>
+                                <Link to="/">
+                                    <Button variant="contained" color="secondary">
+                                        Batal
+                                    </Button>
+                                </Link>
                             </Box> 
                         </CardActions>
                     </form>        
