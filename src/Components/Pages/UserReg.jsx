@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import CardActions from '@material-ui/core/CardActions'
 import CardHeader from '@material-ui/core/CardHeader'
-import { BrowserRouter as Router, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(theme => ({
     root: {
