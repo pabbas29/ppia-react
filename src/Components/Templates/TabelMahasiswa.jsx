@@ -1,100 +1,228 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableHead from '@material-ui/core/TableHead'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableFooter from '@material-ui/core/TableFooter'
-import TablePagination from '@material-ui/core/TablePagination'
-import TableRow from '@material-ui/core/TableRow'
-import IconButton from '@material-ui/core/IconButton'
-import FirstPageIcon from '@material-ui/icons/FirstPage'
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
-import LastPageIcon from '@material-ui/icons/LastPage'
-import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
-import Paper from '@material-ui/core/Paper'
+import clsx from 'clsx'
+import { FormControlLabel, TableHead, Checkbox, TableSortLabel, lighten, Toolbar, Typography, makeStyles, Paper, TableContainer, Table, TableBody, TableRow, TableCell, TablePagination, Switch, Tooltip, IconButton } from '@material-ui/core';
+import FilterListIcon from '@material-ui/icons/FilterList'
+import EditIcon from '@material-ui/icons/Edit'
 
-const useStyles1 = makeStyles(theme => ({
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) return order;
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map(el => el[0]);
+}
+
+const headCells = [
+    {id: 'NPM', label: 'NPM'},
+    {id: 'Nama_Depan', label: 'Nama Depan'},
+    {id: 'Nama_Belakang', label: 'Nama Belakang'},
+    {id: 'Tahun_Masuk', label: 'Tahun Masuk'},
+    {id: 'Status', label: 'Status'},
+];
+
+function EnhancedTableHead(props) {
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const createSortHandler = property => event => {
+        onRequestSort(event, property);
+    };
+
+    return(
+        <TableHead>
+            <TableRow>
+                <TableCell padding="checkbox">
+                    <Checkbox 
+                        indeterminate={numSelected > 0 && numSelected < rowCount}
+                        checked={rowCount > 0 && numSelected === rowCount}
+                        onChange={onSelectAllClick}
+                        inputProps={{ 'aria-label': 'pilih seluruh mahasiswa'}}
+                    />
+                </TableCell>
+                {headCells.map(headCell => (
+                    <TableCell
+                        key={headCell.id}
+                        align={headCell.numeric ? 'right' : 'center'}
+                        padding={headCell.disablePadding ? 'none' : 'default'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <span className={classes.visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </span>
+                            ) :  null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+EnhancedTableHead.propTypes = {
+    classes: PropTypes.object.isRequired,
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+};
+
+const useToolbarStyles = makeStyles(theme => ({
     root: {
-        flexShrink: 0,
-        marginLeft: theme.spacing(2.5),
+        paddingLeft: theme.spacing(2),
+        paddingRight: theme.spacing(1),
+    },
+    highlight:
+        theme.palette.type === 'light'
+          ? {
+                color: theme.palette.secondary.main,
+                backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+            }
+          : {
+                color: theme.palette.text.primary,
+                backgroundColor: theme.palette.secondary.dark,
+            },
+    title: {
+        flex: '1 1 100%',
     },
 }));
 
-function TabelMahasiswaAction(props) {
-    const classes = useStyles1();
-    const theme = useTheme();
-    const { count, page, rowsPerPage, onChangePage } = props;
+const EnhancedTableToolbar = props => {
+    const classes = useToolbarStyles();
+    const { numSelected } = props;
 
-    const handleFirstPageButtonClick = event => {
-        onChangePage(event, 0);
-    };
+    return (
+        <Toolbar
+            className={clsx(classes.root, {
+                [classes.highlight]: numSelected > 0,
+            })}
+        >
+            {numSelected > 0 ? (
+                <Typography className={classes.title} color="inherit" variant="subtitle1">
+                    {numSelected} selected
+                </Typography>
+            ) : (
+                <Typography className={classes.title} variant="h6" id="tableTitle">
+                    Mahasiswa S3 PPIA
+                </Typography>
+            )}
 
-    const handleBackButtonClick = event =>  {
-        onChangePage(event, page - 1);
-    };
-
-    const handleNextButtonClick = event => {
-        onChangePage(event, page + 1);
-    };
-
-    const handleLastPageButtonClick = event => {
-        onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    }
-
-    return(
-        <div className={classes.root}>
-            <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={page === 0}
-                aria-label="awal"
-            >
-                {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-            </IconButton>
-            <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="prev">
-                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-            </IconButton>
-            <IconButton
-                onClick={handleNextButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="next"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-            </IconButton>
-            <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="akhir"
-            >
-                {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-            </IconButton>
-        </div>
-    )
-}
-
-TablePaginationActions.propTypes = {
-    count: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
-    page: PropTypes.number.isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
+            {numSelected > 0 ? (
+                <Tooltip title="Edit">
+                    <IconButton aria-label="edit">
+                        <EditIcon />
+                    </IconButton>
+                </Tooltip>
+            ) : (
+                <Tooltip title="Filter">
+                    <IconButton aria-label="filter">
+                        <FilterListIcon />
+                    </IconButton>
+                </Tooltip>
+            )}
+        </Toolbar>
+    );
 };
-        
-const useStyles2 = makeStyles({
-    table: {
-      minWidth: 500,
-    },
-});
 
-export default function TabelMahasiswa(props) {
-    const rows = props.rows
-    const classes = useStyles2();
+EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+};
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        width: '100%',
+    },
+    paper: {
+        width: '100%',
+        marginBottom: theme.spacing(2),
+        elevation: 1,
+    },
+    table: {
+        minWidth: 750,
+    },
+    visuallyHidden: {
+        border: 0,
+        clip: 'rect(0 0 0 0)',
+        height: 1,
+        margin: -1,
+        overflow: 'hidden',
+        padding: 0,
+        position: 'absolute',
+        top: 20,
+        width: 1,
+    },
+}));
+
+export default function TabelMahasiswa1(props) {
+    const rows = props.rows;
+
+    const classes = useStyles();
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('Nama_Depan');
+    const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = event => {
+        if (event.target.checked) {
+            const newSelecteds = rows.map(n => n.name);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
+    };
+
+    const handleClick = (event, name) => {
+        const selectedIndex = selected.indexOf(name);
+        let newSelected =[];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, name);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length -1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                selected.slice(0, selectedIndex),
+                selected.slice(selectedIndex + 1),
+            );
+        }
+
+        setSelected(newSelected);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -105,59 +233,89 @@ export default function TabelMahasiswa(props) {
         setPage(0);
     };
 
-    return(
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="tabel mahasiswa S3">
-                <TableHead>
-                    <TableRow>
-                        <TableCell align="center">NPM</TableCell>
-                        <TableCell align="center">Nama Depan</TableCell>
-                        <TableCell align="center">Nama Belakang</TableCell>
-                        <TableCell align="center">Tahun Masuk</TableCell>
-                        <TableCell align="center">Status</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {(rowsPerPage > 0
-                        ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        : rows
-                    ).map(rows => (
-                        <TableRow key={rows.ID}>
-                            <TableCell component="th" scope="row" align="center">
-                                {rows.NPM}
-                            </TableCell>
-                            <TableCell align="center">{rows.Nama_Depan}</TableCell>
-                            <TableCell align="center">{rows.Nama_Belakang}</TableCell>
-                            <TableCell align="center">{rows.Tahun_Masuk}</TableCell>
-                            <TableCell align="center">{rows.Status}</TableCell>
-                        </TableRow>
-                    ))}
+    const handleChangeDense = event => {
+        setDense(event.target.checked);
+    };
 
-                    {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                            <TableCell colSpan={6} />
-                        </TableRow>
-                    )}
-                </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                        colSpan={3}
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        SelectProps={{
-                            inputProps: { 'aria-label': 'rows per page' },
-                            native: true,
-                        }}
-                        onChangePage={handleChangePage}
-                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                        ActionsComponent={TablePaginationActions}
+    const isSelected = name => selected.indexOf(name) !== -1;
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+    return (
+        <div className={classes.root}>
+            <Paper className={classes.paper}>
+                <EnhancedTableToolbar numSelected={selected.length} />
+                <TableContainer>
+                    <Table
+                        className={classes.table}
+                        aria-labelledby="tableTitle"
+                        size={dense ? 'small' : 'medium'}
+                        aria-labe="enhanced table"
+                    >
+                        <EnhancedTableHead
+                            classes={classes}
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={rows.length}
                         />
-                    </TableRow>
-                </TableFooter>
-            </Table>
-        </TableContainer>
-    )
+                        <TableBody>
+                            {stableSort(rows, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    const isItemSelected = isSelected(row.ID);
+                                    const labelID = `enhanced-table-checkbox-${index}`;
+
+                                    return(
+                                        <TableRow
+                                            hover
+                                            onClick={event => handleClick(event, row.ID)}
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={row.ID}
+                                            selected={isItemSelected}
+                                        >
+                                            <TableCell padding="checkbox">
+                                                <Checkbox
+                                                    checked={isItemSelected}
+                                                    inputProps={{ 'aria-labelledby': labelID }}
+                                                />
+                                            </TableCell>
+                                            <TableCell component="th" id={labelID} scope="row" padding="none" align="center">
+                                                {row.NPM}
+                                            </TableCell>
+                                            <TableCell align="center">{row.Nama_Depan}</TableCell>
+                                            <TableCell align="center">{row.Nama_Belakang}</TableCell>
+                                            <TableCell align="center">{row.Tahun_Masuk}</TableCell>
+                                            <TableCell align="center">{row.Status}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+            </Paper>
+            <FormControlLabel
+                control={<Switch checked={dense} onChange={handleChangeDense} />}
+                label="Dense padding"
+            />
+        </div>
+    );
 }
