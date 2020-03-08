@@ -1,20 +1,23 @@
 <?php
 session_start();
-include 'dbppia.php';
+include '../dbppia.php';
 
-$sql = "SELECT * FROM mahasiswaS2 ORDER BY Nama_Depan";
+$sql = "SELECT * FROM pengajar ORDER BY Nama_Depan";
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
     while($row = mysqli_fetch_assoc($result)) {
         $msg[] = array("ID" => $row['ID'],
+                        "Prefix" => $row['Prefix'],
                         "Nama_Depan" => $row['Nama_Depan'],
                         "Nama_Tengah" => $row['Nama_Tengah'],
                         "Nama_Belakang" => $row['Nama_Belakang'],
-                        "NPM" => $row['NPM'],
-                        "Semester_Masuk" => $row['Semester_Masuk'],
-                        "Tahun_Masuk" => $row['Tahun_Masuk'],
-                        "Latar" => $row['Latar'],
-                        "Status" => $row['Status']
+                        "Suffix" => $row['Suffix'],
+                        "Golongan" => $row['Golongan'],
+                        "Ruang" => $row['Ruang'],
+                        "Jabatan" => $row['Jabatan'],
+                        "Kekhususan" => $row['Kekhususan'],
+                        "Status_Dosen" => $row['Status_Dosen'],
+                        "Aktif" => $row['Aktif']
                     );
     }
 } else {

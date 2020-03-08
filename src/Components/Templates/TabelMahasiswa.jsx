@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
+import TableFooter from '@material-ui/core/TableFooter'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import IconButton from '@material-ui/core/IconButton'
@@ -13,6 +15,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import LastPageIcon from '@material-ui/icons/LastPage'
 import TablePaginationActions from '@material-ui/core/TablePagination/TablePaginationActions';
+import Paper from '@material-ui/core/Paper'
 
 const useStyles1 = makeStyles(theme => ({
     root: {
@@ -21,7 +24,7 @@ const useStyles1 = makeStyles(theme => ({
     },
 }));
 
-function TabelMahasiswa(props) {
+function TabelMahasiswaAction(props) {
     const classes = useStyles1();
     const theme = useTheme();
     const { count, page, rowsPerPage, onChangePage } = props;
@@ -79,5 +82,82 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
 };
         
+const useStyles2 = makeStyles({
+    table: {
+      minWidth: 500,
+    },
+});
 
-export default TabelMahasiswa;
+export default function TabelMahasiswa(props) {
+    const rows = props.rows
+    const classes = useStyles2();
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = event => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    return(
+        <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="tabel mahasiswa S3">
+                <TableHead>
+                    <TableRow>
+                        <TableCell align="center">NPM</TableCell>
+                        <TableCell align="center">Nama Depan</TableCell>
+                        <TableCell align="center">Nama Belakang</TableCell>
+                        <TableCell align="center">Tahun Masuk</TableCell>
+                        <TableCell align="center">Status</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {(rowsPerPage > 0
+                        ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        : rows
+                    ).map(rows => (
+                        <TableRow key={rows.ID}>
+                            <TableCell component="th" scope="row" align="center">
+                                {rows.NPM}
+                            </TableCell>
+                            <TableCell align="center">{rows.Nama_Depan}</TableCell>
+                            <TableCell align="center">{rows.Nama_Belakang}</TableCell>
+                            <TableCell align="center">{rows.Tahun_Masuk}</TableCell>
+                            <TableCell align="center">{rows.Status}</TableCell>
+                        </TableRow>
+                    ))}
+
+                    {emptyRows > 0 && (
+                        <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={6} />
+                        </TableRow>
+                    )}
+                </TableBody>
+                <TableFooter>
+                    <TableRow>
+                        <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={3}
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                            inputProps: { 'aria-label': 'rows per page' },
+                            native: true,
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                        />
+                    </TableRow>
+                </TableFooter>
+            </Table>
+        </TableContainer>
+    )
+}

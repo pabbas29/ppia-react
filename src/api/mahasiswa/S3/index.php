@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'dbppia.php';
+include '../../dbppia.php';
 
 $sql = "SELECT * FROM mahasiswaS3 ORDER BY Nama_Depan";
 $result = mysqli_query($conn, $sql);
@@ -25,8 +25,8 @@ if (mysqli_num_rows($result) > 0) {
 $json = $msg;
 
 header('content-type: application/json');
-header('Access-Control-Allow-Origin:*');
-echo json_encode($json);
+header('Access-Control-Allow-Origin: http://localhost:3000');
+echo json_encode(['mhsS3' => $json]);
 
 @mysqli_close($conn);
 ?>

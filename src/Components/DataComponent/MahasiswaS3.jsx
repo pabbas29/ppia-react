@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TabelMahasiswa from '../Templates/TabelMahasiswa';
 
 function DataMhsS3() {
 
@@ -6,15 +7,19 @@ function DataMhsS3() {
         fetchMhsS3();
     },[]);
 
+    const [mhsS3json, setMhsS3] = useState([]);
+
     const fetchMhsS3 = async () => {
-        const mhsS3 = await fetch('http://localhost/ppia-react/src/API/ReadMhsS3.php');
+        const mhsS3 = await fetch('http://localhost/ppia-react/src/API/mahasiswa/S3/');
         const mhsS3json = await mhsS3.json();
-        console.log(mhsS3json);
+        console.log(mhsS3json.mhsS3);
+        setMhsS3(mhsS3json.mhsS3);
     }
+
 
     return(
         <div>
-            <h1>Mahasiswa S3</h1>
+            <TabelMahasiswa rows={mhsS3json} />
         </div>
     );
 }

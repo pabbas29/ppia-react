@@ -33,6 +33,7 @@ if (mysqli_num_rows($result) > 0) {
 $json = $msg;
 
 header('content-type: application/json');
+header('Access-Control-Allow-Origin: http://localhost');
 echo json_encode($json);
 
 @mysqli_close($conn);
