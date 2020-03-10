@@ -26,6 +26,8 @@ $json = $msg;
 
 header('content-type: application/json');
 header('Access-Control-Allow-Origin: http://localhost:3000');
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Max-Age: 3600");
 echo json_encode(['mhsS3' => $json]);
 
 @mysqli_close($conn);

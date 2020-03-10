@@ -33,8 +33,8 @@ function stableSort(array, comparator) {
 
 const headCells = [
     {id: 'NPM', label: 'NPM'},
-    {id: 'Nama_Depan', label: 'Nama Depan'},
-    {id: 'Nama_Belakang', label: 'Nama Belakang'},
+    {id: 'Nama_Mahasiswa', label: 'Nama Mahasiswa'},
+    {id: 'Semester_Masuk', label: 'Semester Masuk'},
     {id: 'Tahun_Masuk', label: 'Tahun Masuk'},
     {id: 'Status', label: 'Status'},
 ];
@@ -178,12 +178,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function TabelMahasiswa1(props) {
+export default function TabelMahasiswa(props) {
     const rows = props.rows;
 
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('Nama_Depan');
+    const [orderBy, setOrderBy] = React.useState('Nama_Mahasiswa');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
@@ -250,7 +250,7 @@ export default function TabelMahasiswa1(props) {
                         className={classes.table}
                         aria-labelledby="tableTitle"
                         size={dense ? 'small' : 'medium'}
-                        aria-labe="enhanced table"
+                        aria-label="enhanced table"
                     >
                         <EnhancedTableHead
                             classes={classes}
@@ -287,8 +287,8 @@ export default function TabelMahasiswa1(props) {
                                             <TableCell component="th" id={labelID} scope="row" padding="none" align="center">
                                                 {row.NPM}
                                             </TableCell>
-                                            <TableCell align="center">{row.Nama_Depan}</TableCell>
-                                            <TableCell align="center">{row.Nama_Belakang}</TableCell>
+                                            <TableCell align="center">{row.Nama_Depan} {row.Nama_Belakang}</TableCell>
+                                            <TableCell align="center">{row.Semester_Masuk}</TableCell>
                                             <TableCell align="center">{row.Tahun_Masuk}</TableCell>
                                             <TableCell align="center">{row.Status}</TableCell>
                                         </TableRow>
