@@ -21,9 +21,23 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+function handleLogout () {
+    localStorage.setItem('isLoggedIn', false);
+    window.location.reload();
+}
+
+const buttonLogin = <Link to="/"><Button color="primary" style={{color:"white"}}>Login</Button></Link>
+const buttonLogout = <Button color="primary"
+                            style={{color:"white"}}
+                            onClick={(e) => handleLogout(e)}
+                    >Logout
+                    </Button>
 
 function ButtonAppBar () {
     const classes = useStyles();
+
+    const logInStatus = localStorage.getItem('isLoggedIn') === 'true';
+    console.log(logInStatus);
 
     return(
         <div className={classes.root}>
@@ -33,9 +47,7 @@ function ButtonAppBar () {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}></Typography>
-                    <Link to="/login">
-                        <Button color="primary" style={{color:"white"}}>Login</Button>
-                    </Link>
+                    {logInStatus ? buttonLogout : buttonLogin}
                 </Toolbar>
             </AppBar>
         </div>

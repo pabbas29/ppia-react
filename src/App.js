@@ -9,17 +9,23 @@ import UserReg from './Components/Pages/UserReg'
 
 
 class App extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state= {
         isLoggedIn: false,
         loggedInUser: "",
         userRole: "",
     }
-}
+  }
+
+  componentDidMount() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    this.setState({isLoggedIn});
+  }
 
   render() {
-    const isLoggedIn = this.state.isLoggedIn
+    const isLoggedIn = this.state.isLoggedIn;
+    console.log(isLoggedIn)
 
     if (isLoggedIn) {
       return(
@@ -27,7 +33,10 @@ class App extends Component {
           <Router>
             <Header />
             <ButtonAppBar />
-            <MainPage />
+            <Switch>
+                <Route exact path="/" component={MainPage} />
+                <Route path="/userreg" component={UserReg} />
+            </Switch>
           </Router>   
         </div>
       )
@@ -39,7 +48,6 @@ class App extends Component {
             <ButtonAppBar />
             <Switch>
                 <Route exact path="/" component={LoginCard} />
-                <Route path="/login" component={LoginCard} />
                 <Route path="/userreg" component={UserReg} />
             </Switch>
           </Router>
