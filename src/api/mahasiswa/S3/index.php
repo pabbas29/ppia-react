@@ -1,6 +1,22 @@
 <?php
 session_start();
 include '../../dbppia.php';
+include '../../token.php';
+
+if (isset($_GET['AuthToken'])) {
+    $AuthToken = $_GET['AuthToken'];
+    if ($AuthToken <> $token) {
+        http_response_code(401);
+        $msg = array("status" => 0, "msg" => "permintaan ditolak");
+        echo json_encode($msg);
+        exit();
+    }
+} else {
+    http_response_code(401);
+    $msg = array("status" => 0, "msg" => "permintaan ditolak");
+    echo json_encode($msg);
+    exit();
+}
 
 $sql = "SELECT * FROM mahasiswaS3 ORDER BY Nama_Depan";
 $result = mysqli_query($conn, $sql);
