@@ -1,53 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Axios from 'axios'
 import TabelMahasiswa from '../Templates/TabelMahasiswa';
+import { useEffect, useState } from 'react';
 
-class DataMhsS3 extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            error: null,
-            isLoaded: false,
-            items: []
-        };
-    }
+export default function DataMhsS3() {
+    const [error, setError] = useState();
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [payload, setPayload] = useState();
 
-    async componentDidMount() {
-        await Axios.get('http://localhost/ppia-react/src/API/mahasiswa/S3/')
+    useEffect(() =>
+        async function loadMhsS3() {
+            await Axios.get('http://localhost/ppia-react/src/API/mahasiswa/S3/index.php?AuthToken=SzcV6492j9imwLwmVfq4')
             .then(response => {
-                this.setState({
-                    isLoaded: true,
-                    items: response.data.mhsS3
-                });
-            }, error => {
-                this.setState({
-                    isLoaded: false,
-                    error: error
-                })
+                setIsLoaded(true);
+                setPayload(response.data.mhsS3)
             });
-    }
-
-    
-
-    render() {
-        const { error, isLoaded, items } = this.state;
-
-        if (isLoaded) {
-            return(
-                <div>
-                    <TabelMahasiswa rows={items} />
-                </div>
-            );
-        } else {
-            return(
-                <div>
-                    <h1>Tidak ada data</h1>
-                </div>
-            )
         }
-        
-    }
-   
-}
+    );
 
-export default DataMhsS3
+    if (isLoaded) {
+        return(
+            <div>
+                <TabelMahasiswa rows={payload} />
+            </div>
+        );
+    } else {
+        return(
+            <div>
+                <h1>Tidak ada data</h1>
+            </div>
+        )
+    }
+}

@@ -22,3 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 /php/dbppia.php
+/api/dbppia.php
+/api/config
